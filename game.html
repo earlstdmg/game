@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #66ff66;
+            margin-top: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .circle {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: move;
+            background-color: #66ff66;
+        }
+
+        .snake {
+            width: 200px;
+            height: 200px;
+            text-align: center;
+            border: 2px solid #66ff66;
+            position: absolute;
+            top: 150px;
+        }
+
+        .apple {
+            width: 110px;
+            height: 110px;
+            position: absolute;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        
+        #apple4,
+        #apple5 {
+            width: 110px;
+            height: 110px;
+            position: absolute;
+        }
+
+       
+        #apple4 {
+            top: 100px;
+            left: 400px;
+        }
+
+        #apple5 {
+            top: 300px;
+            left: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SNAKE FEEDING GAME
+        Drag the snake and eat couple apples
+    </h1>
+    
+    <div class="game-container">
+        <div id="snake" class="circle snake">
+            <img src="snake.jpg" alt="Snake">
+        </div>
+        <div id="apple1" class="circle apple" style="top: 50px; left: 300px;">
+            <img src="apple.jpg" alt="Apple">
+        </div>
+        <div id="apple2" class="circle apple" style="top: 250px; left: 500px;">
+            <img src="apple.jpg" alt="Apple">
+        </div>
+        <div id="apple3" class="circle apple" style="top: 400px; left: 100px;">
+            <img src="apple.jpg" alt="Apple">
+        </div>
+        <div id="apple4" class="circle apple" style="top: 100px; left: 400px;">
+            <img src="apple.jpg" alt="Apple">
+        </div>
+        <div id="apple5" class="circle apple" style="top: 300px; left: 200px;">
+            <img src="apple.jpg" alt="Apple">
+        </div>
+    </div>
+
+    <script>
+        
+        dragElement(document.getElementById("snake"));
+        dragElement(document.getElementById("apple1"));
+        dragElement(document.getElementById("apple2"));
+        dragElement(document.getElementById("apple3"));
+        dragElement(document.getElementById("apple4"));
+        dragElement(document.getElementById("apple5"));
+
+        function dragElement(elmnt) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (document.getElementById(elmnt.id + "header")) {
+                document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+            } else {
+                elmnt.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+
+                checkCollision(elmnt);
+            }
+
+            function checkCollision(snake) {
+                var snakeRect = snake.getBoundingClientRect();
+
+                
+                for (let i = 1; i <= 5; i++) {
+                    var apple = document.getElementById("apple" + i);
+                    var appleRect = apple.getBoundingClientRect();
+
+                    
+                    if (
+                        snakeRect.left < appleRect.right &&
+                        snakeRect.right > appleRect.left &&
+                        snakeRect.top < appleRect.bottom &&
+                        snakeRect.bottom > appleRect.top
+                    ) {
+                        apple.remove();
+                    }
+                }
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+    </script>
+</body>
+</html>
